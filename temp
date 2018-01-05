@@ -1,0 +1,104 @@
+import React from 'react';
+
+// We'll need to import all those action creators.
+// import {
+//     updateExpenseDescription,
+//     updateExpenseAmount,
+//     addExpense
+// } from './expenseActions';
+
+export default class CitySelect extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = ({
+      searchedCity: '',
+      data: []
+
+    })
+
+        // Here we're binding these methods to the context
+        // of the components. This only has to be done,
+        // because these methods are called back by
+        // event emitters (which lose context).
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmission = this.handleSubmission.bind(this);
+    }
+    handleChange(e) {
+        e.preventDefault();
+        this.setState({
+
+            [event.target.name]: event.target.value,
+
+        })
+    }
+
+    handleSubmission() {
+        //.name
+        //.coord.lon
+        //.coord.lat
+
+        //.main.temp + 'F' 
+        //.main.pressure
+        //.main.humidity + '%'
+        //.main.temp_min + 'F'
+        //.main.temp_max + 'F'
+        //.main.wind.speed + 'mph'
+        var ApiKey = '&units=imperial&appid=d89a5ae23d2893c5ececda2b63da2ff4';
+        var OWM = 'http://api.openweathermap.org/data/2.5/weather?q=';
+        var city = this.state.searchedCity;
+
+
+        var data = [];
+
+        axios
+            .get(OWM + city + ApiKey)
+            .then((response) => {
+                data.push(response.data);
+
+
+                this.setState({
+                    countryData: data,
+                    count: 1
+                })
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+
+
+
+    }
+
+    render() {
+        // These values were provided by connect()
+        //const { description, amount, lineItems } = this.props;
+
+        return (
+            <div>
+                <div className="citySelectorDiv">
+                    <form>
+                        <div className="form-row">
+                            <div className="col">
+                                <div className="input-group">
+                                    <input type="text" className="form-control" placeholder="Enter a City or Click on one below..." aria-label="Search for..." name="searchedCity" onChange={this.handleChange} />
+                                    <span className="input-group-btn">
+                                        <button className="btn btn-success" type="button" onClick={this.handleSubmission}>Go!</button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div className="preloadedCities mb-3">
+                    <button type="button" className="btn btn-primary" onClick={this.handleSubmission}>San Diego</button>
+                    <button type="button" className="btn btn-primary" onClick={this.handleSubmission}>New York</button>
+                    <button type="button" className="btn btn-primary" onClick={this.handleSubmission}>Washington D.C</button>
+                    <button type="button" className="btn btn-primary" onClick={this.handleSubmission}>London</button>
+                    <button type="button" className="btn btn-primary" onClick={this.handleSubmission}>Tokyo</button>
+                </div>
+            </div>
+
+        );
+    }
+}
